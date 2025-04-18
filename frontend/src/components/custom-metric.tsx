@@ -45,33 +45,37 @@ export function CustomMetricTracker({ metrics, onChange }: CustomMetricProps) {
   };
 
   return (
-    <div className="w-full py-4">
-      <div className="flex justify-between items-center mb-3">
-        <h2 className="text-lg font-medium">Custom Metrics</h2>
+    <div className="w-full py-6 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Custom Metrics</h2>
         {!isAdding && (
-          <Button onClick={() => setIsAdding(true)} variant="outline" size="sm">
+          <Button 
+            onClick={() => setIsAdding(true)} 
+            variant="outline" 
+            size="sm"
+          >
             Add Metric
           </Button>
         )}
       </div>
       
       {isAdding && (
-        <div className="p-4 bg-secondary/50 rounded-lg mb-4 space-y-3">
+        <div className="p-5 bg-gray-50 dark:bg-gray-700 rounded-lg mb-5 space-y-4">
           <input
             type="text"
             value={newMetricName}
             onChange={(e) => setNewMetricName(e.target.value)}
             placeholder="Metric name (e.g., Steps, Water intake)"
-            className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
           />
           
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <input
               type="text"
               value={newMetricValue}
               onChange={(e) => setNewMetricValue(e.target.value)}
               placeholder="Value (e.g., 10000, true, good)"
-              className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
             />
             
             <input
@@ -79,38 +83,48 @@ export function CustomMetricTracker({ metrics, onChange }: CustomMetricProps) {
               value={newMetricUnit}
               onChange={(e) => setNewMetricUnit(e.target.value)}
               placeholder="Unit (optional)"
-              className="flex h-9 w-1/3 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="w-1/3 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
             />
           </div>
           
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 pt-2">
             <Button variant="ghost" onClick={() => setIsAdding(false)}>
               Cancel
             </Button>
-            <Button onClick={addMetric}>
+            <Button variant="primary" onClick={addMetric}>
               Add
             </Button>
           </div>
         </div>
       )}
       
-      <div className="space-y-2">
+      <div className="space-y-3">
+        {metrics.length === 0 && (
+          <p className="text-gray-500 dark:text-gray-400 text-sm italic text-center py-4">
+            No custom metrics added yet. Add your first one!
+          </p>
+        )}
+        
         {metrics.map((metric, index) => (
           <div 
             key={index}
-            className="flex items-center justify-between p-3 bg-secondary rounded-lg"
+            className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600"
           >
             <div>
-              <p className="font-medium">{metric.name}</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="font-medium text-gray-900 dark:text-white">{metric.name}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {String(metric.value)} {metric.unit && <span>{metric.unit}</span>}
               </p>
             </div>
             <button 
               onClick={() => removeMetric(index)}
-              className="text-muted-foreground hover:text-destructive"
+              className="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors p-1"
+              aria-label="Remove metric"
             >
-              ✕
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </button>
           </div>
         ))}

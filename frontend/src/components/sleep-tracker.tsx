@@ -13,8 +13,8 @@ export function SleepTracker({ value, onChange }: SleepTrackerProps) {
   };
 
   return (
-    <div className="w-full py-4">
-      <h2 className="text-lg font-medium mb-3">Sleep Quality</h2>
+    <div className="w-full py-6 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Sleep Quality</h2>
       <Slider
         min={1}
         max={5}
@@ -25,7 +25,7 @@ export function SleepTracker({ value, onChange }: SleepTrackerProps) {
         maxLabel="Excellent"
         className="w-full"
       />
-      <div className="flex justify-between mt-1 text-xs text-muted-foreground">
+      <div className="flex justify-between mt-2 text-xs text-gray-500 dark:text-gray-400 px-1">
         <span>Restless</span>
         <span>Interrupted</span>
         <span>Average</span>

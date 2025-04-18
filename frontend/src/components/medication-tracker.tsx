@@ -42,59 +42,79 @@ export function MedicationTracker({ medications, onChange }: MedicationTrackerPr
   };
 
   return (
-    <div className="w-full py-4">
-      <h2 className="text-lg font-medium mb-3">Medications</h2>
+    <div className="w-full py-6 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Medications</h2>
       
-      <div className="space-y-2 mb-4">
+      <div className="space-y-3 mb-5">
+        {medications.length === 0 && (
+          <p className="text-gray-500 dark:text-gray-400 text-sm italic text-center py-2">
+            No medications added. Track your medications here.
+          </p>
+        )}
+        
         {medications.map((med, index) => (
           <div 
             key={index}
-            className="flex items-center justify-between p-3 bg-secondary rounded-lg"
+            className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600"
           >
             <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={med.taken}
-                onChange={() => toggleMedication(index)}
-                className="mr-3 h-5 w-5"
-              />
-              <div>
-                <p className={med.taken ? "line-through text-muted-foreground" : ""}>
-                  {med.name}
-                </p>
-                {med.dosage && (
-                  <p className="text-xs text-muted-foreground">{med.dosage}</p>
-                )}
+              <div className="relative flex items-start">
+                <div className="flex h-6 items-center">
+                  <input
+                    type="checkbox"
+                    id={`med-${index}`}
+                    checked={med.taken}
+                    onChange={() => toggleMedication(index)}
+                    className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-indigo-600 dark:focus:ring-indigo-500"
+                  />
+                </div>
+                <div className="ml-3 text-sm">
+                  <label 
+                    htmlFor={`med-${index}`} 
+                    className={`font-medium ${med.taken ? "line-through text-gray-400 dark:text-gray-500" : "text-gray-900 dark:text-white"}`}
+                  >
+                    {med.name}
+                  </label>
+                  {med.dosage && (
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{med.dosage}</p>
+                  )}
+                </div>
               </div>
             </div>
             <button 
               onClick={() => removeMedication(index)}
-              className="text-muted-foreground hover:text-destructive"
+              className="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors p-1"
+              aria-label="Remove medication"
             >
-              ✕
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </button>
           </div>
         ))}
       </div>
 
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={newMedName}
-          onChange={(e) => setNewMedName(e.target.value)}
-          placeholder="Medication name"
-          className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-        />
-        <input
-          type="text"
-          value={newMedDosage}
-          onChange={(e) => setNewMedDosage(e.target.value)}
-          placeholder="Dosage"
-          className="flex h-9 w-1/3 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-        />
-        <Button onClick={addMedication} variant="outline">
-          Add
-        </Button>
+      <div className="space-y-4 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+        <div className="flex gap-3">
+          <input
+            type="text"
+            value={newMedName}
+            onChange={(e) => setNewMedName(e.target.value)}
+            placeholder="Medication name"
+            className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+          />
+          <input
+            type="text"
+            value={newMedDosage}
+            onChange={(e) => setNewMedDosage(e.target.value)}
+            placeholder="Dosage"
+            className="w-1/3 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+          />
+          <Button onClick={addMedication} variant="primary">
+            Add
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -12,22 +12,30 @@ export function Navigation() {
   ];
   
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border">
-      <div className="max-w-md mx-auto flex">
-        {tabs.map(tab => (
-          <button
-            key={tab.path}
-            onClick={() => navigate(tab.path)}
-            className={`flex flex-col items-center justify-center flex-1 py-3 ${
-              location.pathname === tab.path
-                ? 'text-primary font-medium'
-                : 'text-muted-foreground'
-            }`}
-          >
-            <span className="text-xl mb-1">{tab.icon}</span>
-            <span className="text-xs">{tab.label}</span>
-          </button>
-        ))}
+    <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-lg z-50">
+      <div className="max-w-md mx-auto flex h-16">
+        {tabs.map(tab => {
+          const isActive = location.pathname === tab.path;
+          return (
+            <button
+              key={tab.path}
+              onClick={() => navigate(tab.path)}
+              className={`flex flex-col items-center justify-center flex-1 transition-all ${
+                isActive
+                  ? 'text-indigo-600 dark:text-indigo-400 font-medium'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-300'
+              }`}
+            >
+              <span className={`text-2xl mb-1 ${isActive ? 'scale-110' : ''} transition-transform`}>
+                {tab.icon}
+              </span>
+              <span className="text-xs">{tab.label}</span>
+              {isActive && (
+                <div className="absolute top-0 h-1 w-10 bg-indigo-600 dark:bg-indigo-400 rounded-b-full" />
+              )}
+            </button>
+          );
+        })}
       </div>
     </nav>
   );
