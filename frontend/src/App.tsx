@@ -24,7 +24,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system">
         <BrowserRouter>
-          <div className="min-h-screen bg-background text-foreground pb-16">
+          <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 pb-16">
             <Routes>
               <Route path="/" element={<EntryPage />} />
               <Route path="/history" element={<HistoryPage />} />
