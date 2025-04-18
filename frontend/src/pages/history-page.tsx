@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDatabase } from '../hooks/useDatabase';
+import { useLanguage } from '../hooks/useLanguage';
 import { MoodEntry, DateRange } from '../types';
 import { formatDate, timeAgo, downloadAsCSV } from '../lib/utils';
 import { Button } from '../components/ui/button';
@@ -18,6 +19,7 @@ import {
 
 export function HistoryPage() {
   const { getMoodEntriesByDateRange } = useDatabase();
+  const { t } = useLanguage();
   const [entries, setEntries] = useState<MoodEntry[]>([]);
   const [selectedEntry, setSelectedEntry] = useState<MoodEntry | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,17 +47,19 @@ export function HistoryPage() {
   const handleExportCSV = () => {
     if (entries.length === 0) return;
     
-    // Transform entries for export
+    // Transform entries for export with translated column headers
     const exportData = entries.map(entry => ({
-      Date: formatDate(new Date(entry.timestamp)),
-      Mood: entry.mood,
-      Sleep: entry.sleep || 'N/A',
-      Stress: entry.stress || 'N/A',
-      Energy: entry.energy || 'N/A',
-      Notes: entry.note || ''
+      [t('date')]: formatDate(new Date(entry.timestamp)),
+      [t('mood')]: entry.mood,
+      [t('sleep')]: entry.sleep || t('not_available'),
+      [t('stress')]: entry.stress || t('not_available'),
+      [t('energy')]: entry.energy || t('not_available'),
+      [t('notes')]: entry.note || ''
     }));
     
-    downloadAsCSV(exportData, `mood-tracker-export-${new Date().toISOString().slice(0, 10)}.csv`);
+    // Create filename with localized text
+    const filename = `${t('mood')}-${t('tracker')}-${t('export')}-${new Date().toISOString().slice(0, 10)}.csv`;
+    downloadAsCSV(exportData, filename);
   };
   
   const handleDateRangeChange = (days: number) => {
@@ -77,55 +81,55 @@ export function HistoryPage() {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Your History</h1>
+        <h1 className="text-2xl font-bold">{t('your_history')}</h1>
         <Button onClick={handleExportCSV} variant="outline" disabled={entries.length === 0}>
-          Export CSV
+          {t('export_csv')}
         </Button>
       </div>
       
       <div className="mb-6">
-        <h2 className="text-lg font-medium mb-3">Time Range</h2>
+        <h2 className="text-lg font-medium mb-3">{t('time_range')}</h2>
         <div className="flex gap-2">
           <Button 
             onClick={() => handleDateRangeChange(7)} 
-            variant={dateRange.startDate.getTime() === Date.now() - 7 * 24 * 60 * 60 * 1000 ? 'default' : 'outline'}
+            variant={dateRange.startDate.getTime() === Date.now() - 7 * 24 * 60 * 60 * 1000 ? 'primary' : 'outline'}
             size="sm"
           >
-            Week
+            {t('week')}
           </Button>
           <Button 
             onClick={() => handleDateRangeChange(30)} 
-            variant={dateRange.startDate.getTime() === Date.now() - 30 * 24 * 60 * 60 * 1000 ? 'default' : 'outline'}
+            variant={dateRange.startDate.getTime() === Date.now() - 30 * 24 * 60 * 60 * 1000 ? 'primary' : 'outline'}
             size="sm"
           >
-            Month
+            {t('month')}
           </Button>
           <Button 
             onClick={() => handleDateRangeChange(90)} 
-            variant={dateRange.startDate.getTime() === Date.now() - 90 * 24 * 60 * 60 * 1000 ? 'default' : 'outline'}
+            variant={dateRange.startDate.getTime() === Date.now() - 90 * 24 * 60 * 60 * 1000 ? 'primary' : 'outline'}
             size="sm"
           >
-            3 Months
+            {t('3_months')}
           </Button>
           <Button 
             onClick={() => handleDateRangeChange(365)} 
-            variant={dateRange.startDate.getTime() === Date.now() - 365 * 24 * 60 * 60 * 1000 ? 'default' : 'outline'}
+            variant={dateRange.startDate.getTime() === Date.now() - 365 * 24 * 60 * 60 * 1000 ? 'primary' : 'outline'}
             size="sm"
           >
-            Year
+            {t('year')}
           </Button>
         </div>
       </div>
       
       {loading ? (
-        <div className="text-center py-8">Loading data...</div>
+        <div className="text-center py-8">{t('loading_data')}</div>
       ) : entries.length === 0 ? (
-        <div className="text-center py-8">No entries found in this time range.</div>
+        <div className="text-center py-8">{t('no_entries_found')}</div>
       ) : (
         <div className="space-y-8">
           {/* Mood Trends Chart */}
-          <div className="bg-card p-4 rounded-lg shadow-sm">
-            <h2 className="text-lg font-medium mb-4">Mood Trends</h2>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+            <h2 className="text-lg font-medium mb-4">{t('mood_trends')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -137,7 +141,7 @@ export function HistoryPage() {
                   type="monotone" 
                   dataKey="mood" 
                   stroke="#4f46e5" 
-                  name="Mood"
+                  name={t('mood')}
                   strokeWidth={2}
                 />
               </LineChart>
@@ -145,8 +149,8 @@ export function HistoryPage() {
           </div>
           
           {/* Multiple Metrics Chart */}
-          <div className="bg-card p-4 rounded-lg shadow-sm">
-            <h2 className="text-lg font-medium mb-4">Metrics Comparison</h2>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+            <h2 className="text-lg font-medium mb-4">{t('metrics_comparison')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -158,25 +162,25 @@ export function HistoryPage() {
                   type="monotone" 
                   dataKey="mood" 
                   stroke="#4f46e5" 
-                  name="Mood"
+                  name={t('mood')}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="sleep" 
                   stroke="#06b6d4" 
-                  name="Sleep"
+                  name={t('sleep')}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="stress" 
                   stroke="#ef4444" 
-                  name="Stress"
+                  name={t('stress')}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="energy" 
                   stroke="#eab308" 
-                  name="Energy"
+                  name={t('energy')}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -184,12 +188,12 @@ export function HistoryPage() {
           
           {/* Entry List */}
           <div>
-            <h2 className="text-lg font-medium mb-4">Your Entries</h2>
+            <h2 className="text-lg font-medium mb-4">{t('your_entries')}</h2>
             <div className="space-y-3">
               {entries.map(entry => (
                 <div 
                   key={entry.id}
-                  className="p-4 bg-card rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                  className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
                   onClick={() => setSelectedEntry(entry)}
                 >
                   <div className="flex justify-between">
@@ -207,12 +211,12 @@ export function HistoryPage() {
                         </h3>
                       </div>
                       {entry.note && (
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
                           {entry.note}
                         </p>
                       )}
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
                       {timeAgo(new Date(entry.timestamp))}
                     </span>
                   </div>
@@ -226,14 +230,14 @@ export function HistoryPage() {
       {/* Entry Detail Modal (simple implementation) */}
       {selectedEntry && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-background p-6 rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">
               {formatDate(new Date(selectedEntry.timestamp))}
             </h2>
             
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg mb-1">Mood</h3>
+                <h3 className="text-lg mb-1">{t('mood')}</h3>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map(level => (
                     <span 
@@ -252,8 +256,8 @@ export function HistoryPage() {
               
               {selectedEntry.sleep && (
                 <div>
-                  <h3 className="text-lg mb-1">Sleep Quality</h3>
-                  <div className="h-2 bg-secondary rounded-full">
+                  <h3 className="text-lg mb-1">{t('sleep_quality')}</h3>
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                     <div 
                       className="h-full bg-blue-500 rounded-full" 
                       style={{ width: `${(selectedEntry.sleep / 5) * 100}%` }}
@@ -264,8 +268,8 @@ export function HistoryPage() {
               
               {selectedEntry.stress && (
                 <div>
-                  <h3 className="text-lg mb-1">Stress Level</h3>
-                  <div className="h-2 bg-secondary rounded-full">
+                  <h3 className="text-lg mb-1">{t('stress_level')}</h3>
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                     <div 
                       className="h-full bg-red-500 rounded-full" 
                       style={{ width: `${(selectedEntry.stress / 5) * 100}%` }}
@@ -276,8 +280,8 @@ export function HistoryPage() {
               
               {selectedEntry.energy && (
                 <div>
-                  <h3 className="text-lg mb-1">Energy Level</h3>
-                  <div className="h-2 bg-secondary rounded-full">
+                  <h3 className="text-lg mb-1">{t('energy_level')}</h3>
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                     <div 
                       className="h-full bg-yellow-500 rounded-full" 
                       style={{ width: `${(selectedEntry.energy / 5) * 100}%` }}
@@ -288,12 +292,12 @@ export function HistoryPage() {
               
               {selectedEntry.medications && selectedEntry.medications.length > 0 && (
                 <div>
-                  <h3 className="text-lg mb-1">Medications</h3>
+                  <h3 className="text-lg mb-1">{t('medications')}</h3>
                   <ul className="pl-5 list-disc">
                     {selectedEntry.medications.map((med, i) => (
-                      <li key={i} className={med.taken ? '' : 'text-muted-foreground'}>
+                      <li key={i} className={med.taken ? '' : 'text-gray-500 dark:text-gray-400'}>
                         {med.name} {med.dosage && `(${med.dosage})`} 
-                        {med.taken ? ' ✓' : ' ✗'}
+                        {med.taken ? ` ${t('taken')}` : ` ${t('not_taken')}`}
                       </li>
                     ))}
                   </ul>
@@ -302,13 +306,13 @@ export function HistoryPage() {
               
               {selectedEntry.meals && selectedEntry.meals.length > 0 && (
                 <div>
-                  <h3 className="text-lg mb-1">Meals</h3>
+                  <h3 className="text-lg mb-1">{t('meals')}</h3>
                   <ul className="pl-5 list-disc">
                     {selectedEntry.meals.map((meal, i) => (
                       <li key={i}>
-                        {meal.name} ({meal.category})
+                        {meal.name} ({t(meal.category)})
                         {meal.rating && (
-                          <span className="ml-2">
+                          <span className="ml-2" title={`${meal.rating} ${t('stars')}`}>
                             {Array(meal.rating).fill('★').join('')}
                           </span>
                         )}
@@ -320,7 +324,7 @@ export function HistoryPage() {
               
               {selectedEntry.customMetrics && selectedEntry.customMetrics.length > 0 && (
                 <div>
-                  <h3 className="text-lg mb-1">Custom Metrics</h3>
+                  <h3 className="text-lg mb-1">{t('custom_metrics')}</h3>
                   <ul className="pl-5 list-disc">
                     {selectedEntry.customMetrics.map((metric, i) => (
                       <li key={i}>
@@ -333,8 +337,8 @@ export function HistoryPage() {
               
               {selectedEntry.note && (
                 <div>
-                  <h3 className="text-lg mb-1">Notes</h3>
-                  <p className="text-sm whitespace-pre-wrap bg-secondary/50 p-3 rounded">
+                  <h3 className="text-lg mb-1">{t('notes')}</h3>
+                  <p className="text-sm whitespace-pre-wrap bg-gray-50 dark:bg-gray-700 p-3 rounded">
                     {selectedEntry.note}
                   </p>
                 </div>
@@ -344,8 +348,9 @@ export function HistoryPage() {
             <Button 
               onClick={() => setSelectedEntry(null)}
               className="w-full mt-6"
+              variant="primary"
             >
-              Close
+              {t('close')}
             </Button>
           </div>
         </div>

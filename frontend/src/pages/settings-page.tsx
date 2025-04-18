@@ -3,10 +3,13 @@ import { Button } from '../components/ui/button';
 import { useDatabase } from '../hooks/useDatabase';
 import { UserSettings } from '../types';
 import { useTheme } from '../components/ui/theme-provider';
+import { useLanguage } from '../hooks/useLanguage';
+import { Language } from '../lib/utils';
 
 export function SettingsPage() {
   const { getUserSettings, updateUserSettings } = useDatabase();
   const { theme, setTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
   
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -62,49 +65,73 @@ export function SettingsPage() {
       }
     });
   };
+
+  const handleLanguageChange = (newLanguage: Language) => {
+    setLanguage(newLanguage);
+  };
   
   if (loading) {
-    return <div className="text-center py-8">Loading settings...</div>;
+    return <div className="text-center py-8">{t('loading')}</div>;
   }
   
   if (!settings) {
-    return <div className="text-center py-8">Error loading settings</div>;
+    return <div className="text-center py-8">{t('error_loading_settings')}</div>;
   }
   
   return (
     <div className="max-w-md mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">Settings</h1>
+      <h1 className="text-2xl font-bold mb-6">{t('settings')}</h1>
       
       <div className="space-y-6">
         <div>
-          <h2 className="text-lg font-medium mb-3">Theme</h2>
+          <h2 className="text-lg font-medium mb-3">{t('language')}</h2>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => handleLanguageChange('en')}
+              variant={language === 'en' ? 'primary' : 'outline'}
+              size="sm"
+            >
+              English
+            </Button>
+            <Button
+              onClick={() => handleLanguageChange('de')}
+              variant={language === 'de' ? 'primary' : 'outline'}
+              size="sm"
+            >
+              Deutsch
+            </Button>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-lg font-medium mb-3">{t('theme')}</h2>
           <div className="flex gap-2">
             <Button
               onClick={() => setSettings({ ...settings, theme: 'light' })}
-              variant={settings.theme === 'light' ? 'default' : 'outline'}
+              variant={settings.theme === 'light' ? 'primary' : 'outline'}
               size="sm"
             >
-              Light
+              {t('light')}
             </Button>
             <Button
               onClick={() => setSettings({ ...settings, theme: 'dark' })}
-              variant={settings.theme === 'dark' ? 'default' : 'outline'}
+              variant={settings.theme === 'dark' ? 'primary' : 'outline'}
               size="sm"
             >
-              Dark
+              {t('dark')}
             </Button>
             <Button
               onClick={() => setSettings({ ...settings, theme: 'system' })}
-              variant={settings.theme === 'system' ? 'default' : 'outline'}
+              variant={settings.theme === 'system' ? 'primary' : 'outline'}
               size="sm"
             >
-              System
+              {t('system')}
             </Button>
           </div>
         </div>
         
         <div>
-          <h2 className="text-lg font-medium mb-3">Data Storage</h2>
+          <h2 className="text-lg font-medium mb-3">{t('data_storage')}</h2>
           <div className="flex items-center">
             <label className="flex items-center cursor-pointer">
               <div className="relative">
@@ -114,30 +141,30 @@ export function SettingsPage() {
                   checked={settings.offlineOnly}
                   onChange={() => setSettings({ ...settings, offlineOnly: !settings.offlineOnly })}
                 />
-                <div className={`block w-10 h-6 rounded-full ${settings.offlineOnly ? 'bg-primary' : 'bg-muted'}`}></div>
+                <div className={`block w-10 h-6 rounded-full ${settings.offlineOnly ? 'bg-indigo-600' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
                 <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition ${settings.offlineOnly ? 'transform translate-x-4' : ''}`}></div>
               </div>
-              <span className="ml-3 text-sm font-medium">Offline-only mode</span>
+              <span className="ml-3 text-sm font-medium">{t('offline_only_mode')}</span>
             </label>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {settings.offlineOnly 
-              ? "Your data stays on your device only."
-              : "Enable cloud backup when available (not yet implemented)."}
+              ? t('data_stays_local')
+              : t('cloud_backup_notice')}
           </p>
         </div>
         
         <div>
-          <h2 className="text-lg font-medium mb-3">Metrics to Display</h2>
+          <h2 className="text-lg font-medium mb-3">{t('metrics_to_display')}</h2>
           <div className="space-y-2">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={settings.metrics.showSleep}
                 onChange={() => handleToggleMetric('showSleep')}
-                className="rounded border-muted h-4 w-4"
+                className="rounded border-gray-300 h-4 w-4 text-indigo-600 focus:ring-indigo-500"
               />
-              <span>Sleep Quality</span>
+              <span>{t('sleep_quality')}</span>
             </label>
             
             <label className="flex items-center gap-2 cursor-pointer">
@@ -145,9 +172,9 @@ export function SettingsPage() {
                 type="checkbox"
                 checked={settings.metrics.showStress}
                 onChange={() => handleToggleMetric('showStress')}
-                className="rounded border-muted h-4 w-4"
+                className="rounded border-gray-300 h-4 w-4 text-indigo-600 focus:ring-indigo-500"
               />
-              <span>Stress Level</span>
+              <span>{t('stress_level')}</span>
             </label>
             
             <label className="flex items-center gap-2 cursor-pointer">
@@ -155,9 +182,9 @@ export function SettingsPage() {
                 type="checkbox"
                 checked={settings.metrics.showEnergy}
                 onChange={() => handleToggleMetric('showEnergy')}
-                className="rounded border-muted h-4 w-4"
+                className="rounded border-gray-300 h-4 w-4 text-indigo-600 focus:ring-indigo-500"
               />
-              <span>Energy Level</span>
+              <span>{t('energy_level')}</span>
             </label>
             
             <label className="flex items-center gap-2 cursor-pointer">
@@ -165,9 +192,9 @@ export function SettingsPage() {
                 type="checkbox"
                 checked={settings.metrics.showMedications}
                 onChange={() => handleToggleMetric('showMedications')}
-                className="rounded border-muted h-4 w-4"
+                className="rounded border-gray-300 h-4 w-4 text-indigo-600 focus:ring-indigo-500"
               />
-              <span>Medications</span>
+              <span>{t('medications')}</span>
             </label>
             
             <label className="flex items-center gap-2 cursor-pointer">
@@ -175,25 +202,25 @@ export function SettingsPage() {
                 type="checkbox"
                 checked={settings.metrics.showMeals}
                 onChange={() => handleToggleMetric('showMeals')}
-                className="rounded border-muted h-4 w-4"
+                className="rounded border-gray-300 h-4 w-4 text-indigo-600 focus:ring-indigo-500"
               />
-              <span>Meals</span>
+              <span>{t('meals')}</span>
             </label>
           </div>
         </div>
         
         <div>
-          <h2 className="text-lg font-medium mb-3">Data Management</h2>
+          <h2 className="text-lg font-medium mb-3">{t('data_management')}</h2>
           <div className="grid grid-cols-2 gap-3">
             <Button variant="outline" className="text-sm">
-              Export All Data
+              {t('export_all_data')}
             </Button>
-            <Button variant="outline" className="text-sm text-destructive hover:text-destructive">
-              Delete All Data
+            <Button variant="outline" className="text-sm text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300">
+              {t('delete_all_data')}
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2">
-            Export creates a backup of all your entries. Delete permanently removes all data.
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            {t('data_management_notice')}
           </p>
         </div>
       </div>
@@ -201,9 +228,10 @@ export function SettingsPage() {
       <Button
         onClick={handleSaveSettings}
         className="w-full mt-8"
+        variant="primary"
         disabled={saving}
       >
-        {saving ? 'Saving...' : 'Save Settings'}
+        {saving ? t('saving') : t('save_settings')}
       </Button>
     </div>
   );

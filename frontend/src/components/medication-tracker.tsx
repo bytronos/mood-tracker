@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Medication } from '../types';
 import { Button } from './ui/button';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface MedicationTrackerProps {
   medications: Medication[];
@@ -8,6 +9,7 @@ interface MedicationTrackerProps {
 }
 
 export function MedicationTracker({ medications, onChange }: MedicationTrackerProps) {
+  const { t } = useLanguage();
   const [newMedName, setNewMedName] = useState('');
   const [newMedDosage, setNewMedDosage] = useState('');
 
@@ -43,12 +45,12 @@ export function MedicationTracker({ medications, onChange }: MedicationTrackerPr
 
   return (
     <div className="w-full py-6 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Medications</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">{t('medications')}</h2>
       
       <div className="space-y-3 mb-5">
         {medications.length === 0 && (
           <p className="text-gray-500 dark:text-gray-400 text-sm italic text-center py-2">
-            No medications added. Track your medications here.
+            {t('no_medications')}
           </p>
         )}
         
@@ -101,7 +103,7 @@ export function MedicationTracker({ medications, onChange }: MedicationTrackerPr
             type="text"
             value={newMedName}
             onChange={(e) => setNewMedName(e.target.value)}
-            placeholder="Medication name"
+            placeholder={t('medication_name')}
             className="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
           />
           <div className="flex gap-2">
@@ -109,11 +111,11 @@ export function MedicationTracker({ medications, onChange }: MedicationTrackerPr
               type="text"
               value={newMedDosage}
               onChange={(e) => setNewMedDosage(e.target.value)}
-              placeholder="Dosage"
+              placeholder={t('dosage')}
               className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
             />
             <Button onClick={addMedication} variant="primary">
-              Add
+              {t('add')}
             </Button>
           </div>
         </div>

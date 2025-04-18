@@ -1,14 +1,16 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useLanguage } from '../hooks/useLanguage';
 
 export function Navigation() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   
   const tabs = [
-    { path: '/', label: 'Entry', icon: '📝' },
-    { path: '/history', label: 'History', icon: '📊' },
-    { path: '/settings', label: 'Settings', icon: '⚙️' }
+    { path: '/', label: t('entry'), icon: '📝' },
+    { path: '/history', label: t('history'), icon: '📊' },
+    { path: '/settings', label: t('settings'), icon: '⚙️' }
   ];
   
   return (

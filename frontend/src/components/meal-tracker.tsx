@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Meal } from '../types';
 import { Button } from './ui/button';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface MealTrackerProps {
   meals: Meal[];
@@ -8,6 +9,7 @@ interface MealTrackerProps {
 }
 
 export function MealTracker({ meals, onChange }: MealTrackerProps) {
+  const { t } = useLanguage();
   const [newMealName, setNewMealName] = useState('');
   const [newMealCategory, setNewMealCategory] = useState<Meal['category']>('snack');
   const [newMealRating, setNewMealRating] = useState<Meal['rating']>(3);
@@ -42,12 +44,12 @@ export function MealTracker({ meals, onChange }: MealTrackerProps) {
 
   return (
     <div className="w-full py-6 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Meals</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">{t('meals')}</h2>
       
       <div className="space-y-3 mb-5">
         {meals.length === 0 && (
           <p className="text-gray-500 dark:text-gray-400 text-sm italic text-center py-2">
-            No meals recorded today. Add your first one!
+            {t('no_meals')}
           </p>
         )}
         
@@ -60,7 +62,7 @@ export function MealTracker({ meals, onChange }: MealTrackerProps) {
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <p className="font-medium text-gray-900 dark:text-white">{meal.name}</p>
                 <span className={`px-2 py-0.5 text-xs rounded-full ${getCategoryColor(meal.category)}`}>
-                  {meal.category.charAt(0).toUpperCase() + meal.category.slice(1)}
+                  {t(meal.category)}
                 </span>
               </div>
               {meal.rating && (
@@ -92,7 +94,7 @@ export function MealTracker({ meals, onChange }: MealTrackerProps) {
           type="text"
           value={newMealName}
           onChange={(e) => setNewMealName(e.target.value)}
-          placeholder="What did you eat?"
+          placeholder={t('what_did_you_eat')}
           className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
         />
         
@@ -103,14 +105,14 @@ export function MealTracker({ meals, onChange }: MealTrackerProps) {
               onChange={(e) => setNewMealCategory(e.target.value as Meal['category'])}
               className="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
             >
-              <option value="breakfast">Breakfast</option>
-              <option value="lunch">Lunch</option>
-              <option value="dinner">Dinner</option>
-              <option value="snack">Snack</option>
+              <option value="breakfast">{t('breakfast')}</option>
+              <option value="lunch">{t('lunch')}</option>
+              <option value="dinner">{t('dinner')}</option>
+              <option value="snack">{t('snack')}</option>
             </select>
             
             <div className="flex items-center gap-1">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Rating:</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">{t('rating')}:</span>
               {[1, 2, 3, 4, 5].map((rating) => (
                 <button
                   key={rating}
@@ -129,7 +131,7 @@ export function MealTracker({ meals, onChange }: MealTrackerProps) {
             variant="primary"
             className="sm:ml-auto"
           >
-            Add Meal
+            {t('add_meal')}
           </Button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { EnergyLevel } from '../types';
 import { Slider } from './ui/slider';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface EnergyTrackerProps {
   value: EnergyLevel;
@@ -8,29 +9,31 @@ interface EnergyTrackerProps {
 }
 
 export function EnergyTracker({ value, onChange }: EnergyTrackerProps) {
+  const { t } = useLanguage();
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(Number(e.target.value) as EnergyLevel);
   };
 
   return (
     <div className="w-full py-6 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Energy Level</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">{t('energy_level')}</h2>
       <Slider
         min={1}
         max={5}
         step={1}
         value={value}
         onChange={handleChange}
-        minLabel="Low"
-        maxLabel="High"
+        minLabel={t('low')}
+        maxLabel={t('high')}
         className="w-full"
       />
       <div className="grid grid-cols-5 mt-2 text-[9px] sm:text-xs text-gray-500 dark:text-gray-400 px-1 text-center">
-        <span>Exhausted</span>
-        <span>Tired</span>
-        <span>Neutral</span>
-        <span>Energetic</span>
-        <span>Very High</span>
+        <span>{t('exhausted')}</span>
+        <span>{t('tired')}</span>
+        <span>{t('neutral')}</span>
+        <span>{t('energetic')}</span>
+        <span>{t('very_high')}</span>
       </div>
     </div>
   );

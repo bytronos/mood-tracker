@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CustomMetric } from '../types';
 import { Button } from './ui/button';
+import { useLanguage } from '../hooks/useLanguage';
 
 interface CustomMetricProps {
   metrics: CustomMetric[];
@@ -8,6 +9,7 @@ interface CustomMetricProps {
 }
 
 export function CustomMetricTracker({ metrics, onChange }: CustomMetricProps) {
+  const { t } = useLanguage();
   const [newMetricName, setNewMetricName] = useState('');
   const [newMetricValue, setNewMetricValue] = useState('');
   const [newMetricUnit, setNewMetricUnit] = useState('');
@@ -47,14 +49,14 @@ export function CustomMetricTracker({ metrics, onChange }: CustomMetricProps) {
   return (
     <div className="w-full py-6 px-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Custom Metrics</h2>
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">{t('custom_metrics')}</h2>
         {!isAdding && (
           <Button 
             onClick={() => setIsAdding(true)} 
             variant="outline" 
             size="sm"
           >
-            Add Metric
+            {t('add_metric')}
           </Button>
         )}
       </div>
@@ -65,7 +67,7 @@ export function CustomMetricTracker({ metrics, onChange }: CustomMetricProps) {
             type="text"
             value={newMetricName}
             onChange={(e) => setNewMetricName(e.target.value)}
-            placeholder="Metric name (e.g., Steps, Water intake)"
+            placeholder={t('metric_name')}
             className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
           />
           
@@ -74,7 +76,7 @@ export function CustomMetricTracker({ metrics, onChange }: CustomMetricProps) {
               type="text"
               value={newMetricValue}
               onChange={(e) => setNewMetricValue(e.target.value)}
-              placeholder="Value (e.g., 10000, true, good)"
+              placeholder={t('metric_value')}
               className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
             />
             
@@ -82,17 +84,17 @@ export function CustomMetricTracker({ metrics, onChange }: CustomMetricProps) {
               type="text"
               value={newMetricUnit}
               onChange={(e) => setNewMetricUnit(e.target.value)}
-              placeholder="Unit (optional)"
+              placeholder={t('unit')}
               className="w-1/3 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
             />
           </div>
           
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="ghost" onClick={() => setIsAdding(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button variant="primary" onClick={addMetric}>
-              Add
+              {t('add')}
             </Button>
           </div>
         </div>
@@ -101,7 +103,7 @@ export function CustomMetricTracker({ metrics, onChange }: CustomMetricProps) {
       <div className="space-y-3">
         {metrics.length === 0 && (
           <p className="text-gray-500 dark:text-gray-400 text-sm italic text-center py-4">
-            No custom metrics added yet. Add your first one!
+            {t('no_custom_metrics')}
           </p>
         )}
         

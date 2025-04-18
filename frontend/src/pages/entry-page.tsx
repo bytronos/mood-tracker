@@ -9,10 +9,12 @@ import { MealTracker } from '../components/meal-tracker';
 import { CustomMetricTracker } from '../components/custom-metric';
 import { NoteEditor } from '../components/note-editor';
 import { useDatabase } from '../hooks/useDatabase';
+import { useLanguage } from '../hooks/useLanguage';
 import { MoodEntry, MoodLevel, SleepQuality, StressLevel, EnergyLevel, Medication, Meal, CustomMetric } from '../types';
 
 export function EntryPage() {
   const { addMoodEntry } = useDatabase();
+  const { t } = useLanguage();
   
   const [mood, setMood] = useState<MoodLevel>(3);
   const [sleep, setSleep] = useState<SleepQuality>(3);
@@ -64,7 +66,7 @@ export function EntryPage() {
   return (
     <div className="max-w-md mx-auto px-4 pt-6 pb-32">
       <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600 dark:text-indigo-400">
-        How are you today?
+        {t('how_are_you_today')}
       </h1>
       
       <div className="space-y-4">
@@ -101,7 +103,7 @@ export function EntryPage() {
             variant="outline"
             className="flex-1 h-12"
           >
-            Reset
+            {t('reset')}
           </Button>
           
           <Button
@@ -110,7 +112,7 @@ export function EntryPage() {
             className="flex-1 h-12 text-base"
             disabled={isSaving}
           >
-            {isSaving ? 'Saving...' : 'Save Entry'}
+            {isSaving ? t('saving') : t('save_entry')}
           </Button>
         </div>
       </div>
