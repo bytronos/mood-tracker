@@ -1,0 +1,114 @@
+import React, { useState } from 'react';
+import { Button } from '../components/ui/button';
+import { MoodPicker } from '../components/mood-picker';
+import { SleepTracker } from '../components/sleep-tracker';
+import { StressTracker } from '../components/stress-tracker';
+import { EnergyTracker } from '../components/energy-tracker';
+import { MedicationTracker } from '../components/medication-tracker';
+import { MealTracker } from '../components/meal-tracker';
+import { CustomMetricTracker } from '../components/custom-metric';
+import { NoteEditor } from '../components/note-editor';
+import { useDatabase } from '../hooks/useDatabase';
+import { MoodEntry, MoodLevel, SleepQuality, StressLevel, EnergyLevel, Medication, Meal, CustomMetric } from '../types';
+
+export function EntryPage() {
+  const { addMoodEntry } = useDatabase();
+  
+  const [mood, setMood] = useState<MoodLevel>(3);
+  const [sleep, setSleep] = useState<SleepQuality>(3);
+  const [stress, setStress] = useState<StressLevel>(3);
+  const [energy, setEnergy] = useState<EnergyLevel>(3);
+  const [note, setNote] = useState('');
+  const [medications, setMedications] = useState<Medication[]>([]);
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [customMetrics, setCustomMetrics] = useState<CustomMetric[]>([]);
+  const [isSaving, setIsSaving] = useState(false);
+  
+  const handleSubmit = async () => {
+    setIsSaving(true);
+    
+    const entry: MoodEntry = {
+      timestamp: Date.now(),
+      mood,
+      sleep,
+      stress,
+      energy,
+      note: note.trim() || undefined,
+      medications: medications.length > 0 ? medications : undefined,
+      meals: meals.length > 0 ? meals : undefined,
+      customMetrics: customMetrics.length > 0 ? customMetrics : undefined
+    };
+    
+    try {
+      await addMoodEntry(entry);
+      resetForm();
+    } catch (error) {
+      console.error('Error saving mood entry:', error);
+      // Would add error handling/notification here
+    } finally {
+      setIsSaving(false);
+    }
+  };
+  
+  const resetForm = () => {
+    setMood(3);
+    setSleep(3);
+    setStress(3);
+    setEnergy(3);
+    setNote('');
+    setMedications([]);
+    setMeals([]);
+    setCustomMetrics([]);
+  };
+  
+  return (
+    <div className="max-w-md mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6">How are you today?</h1>
+      
+      <div className="space-y-2 divide-y">
+        <MoodPicker value={mood} onChange={setMood} />
+        
+        <SleepTracker value={sleep} onChange={setSleep} />
+        
+        <StressTracker value={stress} onChange={setStress} />
+        
+        <EnergyTracker value={energy} onChange={setEnergy} />
+        
+        <MedicationTracker 
+          medications={medications} 
+          onChange={setMedications} 
+        />
+        
+        <MealTracker 
+          meals={meals} 
+          onChange={setMeals} 
+        />
+        
+        <CustomMetricTracker
+          metrics={customMetrics}
+          onChange={setCustomMetrics}
+        />
+        
+        <NoteEditor value={note} onChange={setNote} />
+      </div>
+      
+      <div className="flex gap-4 mt-8">
+        <Button
+          onClick={resetForm}
+          variant="outline"
+          className="flex-1"
+        >
+          Reset
+        </Button>
+        
+        <Button
+          onClick={handleSubmit}
+          className="flex-1"
+          disabled={isSaving}
+        >
+          {isSaving ? 'Saving...' : 'Save Entry'}
+        </Button>
+      </div>
+    </div>
+  );
+}
