@@ -57,7 +57,7 @@ export function MealTracker({ meals, onChange }: MealTrackerProps) {
             className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600"
           >
             <div>
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
                 <p className="font-medium text-gray-900 dark:text-white">{meal.name}</p>
                 <span className={`px-2 py-0.5 text-xs rounded-full ${getCategoryColor(meal.category)}`}>
                   {meal.category.charAt(0).toUpperCase() + meal.category.slice(1)}
@@ -75,7 +75,7 @@ export function MealTracker({ meals, onChange }: MealTrackerProps) {
             </div>
             <button 
               onClick={() => removeMeal(index)}
-              className="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors p-1"
+              className="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors p-1 ml-2 flex-shrink-0"
               aria-label="Remove meal"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -96,36 +96,38 @@ export function MealTracker({ meals, onChange }: MealTrackerProps) {
           className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
         />
         
-        <div className="flex flex-wrap gap-3 items-center">
-          <select
-            value={newMealCategory}
-            onChange={(e) => setNewMealCategory(e.target.value as Meal['category'])}
-            className="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-          >
-            <option value="breakfast">Breakfast</option>
-            <option value="lunch">Lunch</option>
-            <option value="dinner">Dinner</option>
-            <option value="snack">Snack</option>
-          </select>
-          
-          <div className="flex items-center gap-1">
-            <span className="text-sm text-gray-500 dark:text-gray-400">Rating:</span>
-            {[1, 2, 3, 4, 5].map((rating) => (
-              <button
-                key={rating}
-                onClick={() => setNewMealRating(rating as Meal['rating'])}
-                className={`text-xl ${rating <= newMealRating! ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`}
-                aria-label={`Rate ${rating} out of 5`}
-              >
-                ★
-              </button>
-            ))}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-wrap gap-3 items-center">
+            <select
+              value={newMealCategory}
+              onChange={(e) => setNewMealCategory(e.target.value as Meal['category'])}
+              className="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+            >
+              <option value="breakfast">Breakfast</option>
+              <option value="lunch">Lunch</option>
+              <option value="dinner">Dinner</option>
+              <option value="snack">Snack</option>
+            </select>
+            
+            <div className="flex items-center gap-1">
+              <span className="text-sm text-gray-500 dark:text-gray-400">Rating:</span>
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <button
+                  key={rating}
+                  onClick={() => setNewMealRating(rating as Meal['rating'])}
+                  className={`text-xl ${rating <= newMealRating! ? "text-yellow-500" : "text-gray-300 dark:text-gray-600"}`}
+                  aria-label={`Rate ${rating} out of 5`}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
           </div>
           
           <Button 
             onClick={addMeal} 
             variant="primary"
-            className="ml-auto"
+            className="sm:ml-auto"
           >
             Add Meal
           </Button>

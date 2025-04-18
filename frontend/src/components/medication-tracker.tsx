@@ -96,24 +96,26 @@ export function MedicationTracker({ medications, onChange }: MedicationTrackerPr
       </div>
 
       <div className="space-y-4 bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
             value={newMedName}
             onChange={(e) => setNewMedName(e.target.value)}
             placeholder="Medication name"
-            className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+            className="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
           />
-          <input
-            type="text"
-            value={newMedDosage}
-            onChange={(e) => setNewMedDosage(e.target.value)}
-            placeholder="Dosage"
-            className="w-1/3 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
-          />
-          <Button onClick={addMedication} variant="primary">
-            Add
-          </Button>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newMedDosage}
+              onChange={(e) => setNewMedDosage(e.target.value)}
+              placeholder="Dosage"
+              className="flex-1 rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"
+            />
+            <Button onClick={addMedication} variant="primary">
+              Add
+            </Button>
+          </div>
         </div>
       </div>
     </div>
