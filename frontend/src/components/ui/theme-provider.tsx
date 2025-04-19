@@ -1,100 +1,71 @@
-import { createContext, useContext, useEffect, useState } from "react";
-
-type Theme = "dark" | "light" | "system";
+import { createContext, useContext, useEffect } from "react";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
-  defaultTheme?: Theme;
-  storageKey?: string;
 };
 
+// Create a dummy context for backwards compatibility
 type ThemeProviderState = {
-  theme: Theme;
-  setTheme: (theme: Theme) => void;
+  theme: "dark";
+  setTheme: () => void;
 };
 
 const initialState: ThemeProviderState = {
-  theme: "system",
+  theme: "dark",
   setTheme: () => null,
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
-// This function directly applies theme styles to override anything else
-function applyThemeStyles(isDark: boolean) {
+// This function applies dark theme styles
+function applyDarkTheme() {
   // Set CSS custom properties
-  document.documentElement.style.setProperty('--tw-bg-color', isDark ? '#111827' : '#f3f4f6');
-  document.documentElement.style.setProperty('--tw-text-color', isDark ? '#f3f4f6' : '#111827');
+  document.documentElement.style.setProperty('--tw-bg-color', '#111827');
+  document.documentElement.style.setProperty('--tw-text-color', '#f3f4f6');
   
   // Set data attribute on body
-  document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.body.setAttribute('data-theme', 'dark');
   
   // Force direct styles on body
-  document.body.style.backgroundColor = isDark ? '#111827' : '#f3f4f6';
-  document.body.style.color = isDark ? '#f3f4f6' : '#111827';
+  document.body.style.backgroundColor = '#111827';
+  document.body.style.color = '#f3f4f6';
   
   // Force direct styles on app container
   const appContainer = document.getElementById('app-container');
   if (appContainer) {
-    appContainer.style.backgroundColor = isDark ? '#111827' : '#f3f4f6';
-    appContainer.style.color = isDark ? '#f3f4f6' : '#111827';
+    appContainer.style.backgroundColor = '#111827';
+    appContainer.style.color = '#f3f4f6';
   }
   
   // Update theme meta tag
   const metaThemeColor = document.getElementById('theme-color-meta');
   if (metaThemeColor) {
-    metaThemeColor.setAttribute('content', isDark ? '#111827' : '#f3f4f6');
+    metaThemeColor.setAttribute('content', '#111827');
   }
-  
-  // Log the change
-  console.log('Applied theme styles:', isDark ? 'dark' : 'light', 'to body and app container');
 }
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
-  storageKey = "theme-preference",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  );
-
   useEffect(() => {
     // Get the root HTML element
     const root = window.document.documentElement;
     
-    // First, remove all theme classes
-    root.classList.remove("light", "dark");
+    // Remove any other classes and add dark
+    root.classList.remove("light", "system");
+    root.classList.add("dark");
     
-    // Determine if we should use dark mode
-    let isDark = false;
-    
-    if (theme === "system") {
-      isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      root.classList.add(isDark ? "dark" : "light");
-    } else {
-      isDark = theme === "dark";
-      root.classList.add(theme);
-    }
-    
-    // Apply the theme directly with inline styles to override anything else
-    applyThemeStyles(isDark);
-    
-  }, [theme]);
+    // Apply dark theme
+    applyDarkTheme();
+  }, []);
 
+  // Create dummy value for backwards compatibility
   const value = {
-    theme,
-    setTheme: (newTheme: Theme) => {
-      console.log("Setting theme to:", newTheme);
-      localStorage.setItem(storageKey, newTheme);
-      setTheme(newTheme);
-      
-      // Apply theme immediately without waiting for effect
-      const isDark = newTheme === "dark" || 
-        (newTheme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-      
-      applyThemeStyles(isDark);
+    theme: "dark" as const,
+    setTheme: () => {
+      // Do nothing - theme can't be changed
+      console.log("Theme switching disabled - using dark theme only");
     },
   };
 

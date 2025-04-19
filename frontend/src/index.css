@@ -2,11 +2,6 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-  }
-
-  .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
   }
@@ -20,14 +15,8 @@
   }
 }
 
-/* Support both class-based approach and inline styles */
-html.light, html.light body,
-body[data-theme="light"] {
-  background-color: #f3f4f6;
-  color: #111827;
-}
-
-html.dark, html.dark body,
+/* Always dark theme */
+html, body, 
 body[data-theme="dark"] {
   background-color: #111827;
   color: #f3f4f6;

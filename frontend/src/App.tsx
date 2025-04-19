@@ -23,10 +23,10 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light">
+      <ThemeProvider>
         <LanguageProvider>
           <BrowserRouter>
-            <div id="app-container" className="min-h-screen pb-16">
+            <div id="app-container" className="min-h-screen pb-16 bg-gray-900 text-gray-100">
               <Routes>
                 <Route path="/" element={<EntryPage />} />
                 <Route path="/history" element={<HistoryPage />} />

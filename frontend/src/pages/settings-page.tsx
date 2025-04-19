@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { useDatabase } from '../hooks/useDatabase';
 import { UserSettings } from '../types';
-import { useTheme } from '../components/ui/theme-provider';
 import { useLanguage } from '../hooks/useLanguage';
 import { Language } from '../lib/utils';
 
 export function SettingsPage() {
   const { getUserSettings, updateUserSettings } = useDatabase();
-  const { theme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   
   const [settings, setSettings] = useState<UserSettings | null>(null);
@@ -45,9 +43,12 @@ export function SettingsPage() {
     
     setSaving(true);
     try {
-      await updateUserSettings(settings);
-      // Theme is already set in the UI when buttons are clicked
-      // This ensures the database and UI stay in sync
+      // Always ensure theme is set to dark
+      const settingsWithDarkTheme = {
+        ...settings, 
+        theme: 'dark'
+      };
+      await updateUserSettings(settingsWithDarkTheme);
     } catch (error) {
       console.error('Error saving settings:', error);
     } finally {
@@ -104,41 +105,7 @@ export function SettingsPage() {
           </div>
         </div>
 
-        <div>
-          <h2 className="text-lg font-medium mb-3">{t('theme')}</h2>
-          <div className="flex gap-2">
-            <Button
-              onClick={() => {
-                setSettings({ ...settings, theme: 'light' });
-                setTheme('light');
-              }}
-              variant={settings.theme === 'light' ? 'primary' : 'outline'}
-              size="sm"
-            >
-              {t('light')}
-            </Button>
-            <Button
-              onClick={() => {
-                setSettings({ ...settings, theme: 'dark' });
-                setTheme('dark');
-              }}
-              variant={settings.theme === 'dark' ? 'primary' : 'outline'}
-              size="sm"
-            >
-              {t('dark')}
-            </Button>
-            <Button
-              onClick={() => {
-                setSettings({ ...settings, theme: 'system' });
-                setTheme('system');
-              }}
-              variant={settings.theme === 'system' ? 'primary' : 'outline'}
-              size="sm"
-            >
-              {t('system')}
-            </Button>
-          </div>
-        </div>
+        {/* Theme selection removed - app is dark mode only */}
         
         <div>
           <h2 className="text-lg font-medium mb-3">{t('data_storage')}</h2>
