@@ -17,6 +17,18 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    @apply bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
   }
+}
+
+/* Support both class-based approach and inline styles */
+html.light, html.light body,
+body[data-theme="light"] {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+html.dark, html.dark body,
+body[data-theme="dark"] {
+  background-color: #111827;
+  color: #f3f4f6;
 }

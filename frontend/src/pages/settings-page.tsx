@@ -46,7 +46,8 @@ export function SettingsPage() {
     setSaving(true);
     try {
       await updateUserSettings(settings);
-      setTheme(settings.theme);
+      // Theme is already set in the UI when buttons are clicked
+      // This ensures the database and UI stay in sync
     } catch (error) {
       console.error('Error saving settings:', error);
     } finally {
@@ -107,21 +108,30 @@ export function SettingsPage() {
           <h2 className="text-lg font-medium mb-3">{t('theme')}</h2>
           <div className="flex gap-2">
             <Button
-              onClick={() => setSettings({ ...settings, theme: 'light' })}
+              onClick={() => {
+                setSettings({ ...settings, theme: 'light' });
+                setTheme('light');
+              }}
               variant={settings.theme === 'light' ? 'primary' : 'outline'}
               size="sm"
             >
               {t('light')}
             </Button>
             <Button
-              onClick={() => setSettings({ ...settings, theme: 'dark' })}
+              onClick={() => {
+                setSettings({ ...settings, theme: 'dark' });
+                setTheme('dark');
+              }}
               variant={settings.theme === 'dark' ? 'primary' : 'outline'}
               size="sm"
             >
               {t('dark')}
             </Button>
             <Button
-              onClick={() => setSettings({ ...settings, theme: 'system' })}
+              onClick={() => {
+                setSettings({ ...settings, theme: 'system' });
+                setTheme('system');
+              }}
               variant={settings.theme === 'system' ? 'primary' : 'outline'}
               size="sm"
             >

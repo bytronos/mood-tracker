@@ -21,7 +21,7 @@ export const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
       minLabel,
       maxLabel,
       fillColor = '#6366f1',
-      emptyColor = '#e5e7eb',
+      emptyColor,
       style,
       ...props
     },
@@ -33,9 +33,12 @@ export const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
     const value = Number(props.value ?? min);
     // Calculate filled percentage
     const pct = max > min ? ((value - min) * 100) / (max - min) : 0;
+    // Set default emptyColor based on theme if not provided
+    const defaultEmptyColor = document.documentElement.classList.contains('dark') ? '#374151' : '#e5e7eb';
+    const trackEmptyColor = emptyColor || defaultEmptyColor;
     // Build track background: filled then empty
     const background =
-      `linear-gradient(to right, ${fillColor} 0%, ${fillColor} ${pct}%, ${emptyColor} ${pct}%, ${emptyColor} 100%)`;
+      `linear-gradient(to right, ${fillColor} 0%, ${fillColor} ${pct}%, ${trackEmptyColor} ${pct}%, ${trackEmptyColor} 100%)`;
     // Merge user style, override background, accent-color, and set thumb CSS variable
     const inputStyle = {
       ...(style as any),

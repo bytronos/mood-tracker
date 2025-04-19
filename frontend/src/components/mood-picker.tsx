@@ -26,7 +26,7 @@ export function MoodPicker({ value, onChange }: MoodPickerProps) {
           const isSelected = value === mood.level;
           const baseClasses = "flex flex-col items-center justify-center p-1 sm:p-3 rounded-lg transition-all duration-200";
           const selectedClasses = isSelected 
-            ? `${mood.color} text-white scale-105 sm:scale-110 shadow-md` 
+            ? `${mood.color} text-white dark:text-white scale-105 sm:scale-110 shadow-md` 
             : "bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200";
           
           return (

@@ -65,7 +65,7 @@ export function EntryPage() {
   
   return (
     <div className="max-w-md mx-auto px-4 pt-6 pb-32">
-      <h1 className="text-3xl font-bold mb-6 text-center text-indigo-600 dark:text-indigo-400">
+      <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700 dark:text-indigo-400 transition-colors">
         {t('how_are_you_today')}
       </h1>
       
@@ -96,7 +96,7 @@ export function EntryPage() {
         <NoteEditor value={note} onChange={setNote} />
       </div>
       
-      <div className="fixed bottom-16 left-0 right-0 bg-white dark:bg-gray-900 p-4 border-t border-gray-200 dark:border-gray-800 shadow-lg z-40">
+      <div className="fixed bottom-16 left-0 right-0 bg-white dark:bg-gray-900 p-4 border-t border-gray-200 dark:border-gray-800 shadow-lg z-40 transition-colors">
         <div className="max-w-md mx-auto flex gap-4">
           <Button
             onClick={resetForm}

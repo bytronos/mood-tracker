@@ -33,7 +33,7 @@ export function Navigation() {
               </span>
               <span className="text-xs">{tab.label}</span>
               {isActive && (
-                <div className="absolute top-0 h-1 w-10 bg-indigo-600 dark:bg-indigo-400 rounded-b-full" />
+                <div className="absolute top-0 h-1 w-10 bg-indigo-600 dark:bg-indigo-400 rounded-b-full transition-colors" />
               )}
             </button>
           );

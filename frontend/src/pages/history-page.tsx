@@ -132,10 +132,24 @@ export function HistoryPage() {
             <h2 className="text-lg font-medium mb-4">{t('mood_trends')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis domain={[1, 5]} />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(107, 114, 128, 0.2)" />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fill: document.documentElement.classList.contains('dark') ? '#f3f4f6' : '#111827' }}
+                  axisLine={{ stroke: 'rgba(107, 114, 128, 0.2)' }}
+                />
+                <YAxis 
+                  domain={[1, 5]} 
+                  tick={{ fill: document.documentElement.classList.contains('dark') ? '#f3f4f6' : '#111827' }}
+                  axisLine={{ stroke: 'rgba(107, 114, 128, 0.2)' }}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
+                    color: document.documentElement.classList.contains('dark') ? '#f3f4f6' : '#111827',
+                    border: document.documentElement.classList.contains('dark') ? '1px solid #4b5563' : '1px solid #e5e7eb'
+                  }} 
+                />
                 <Legend />
                 <Line 
                   type="monotone" 
@@ -153,10 +167,24 @@ export function HistoryPage() {
             <h2 className="text-lg font-medium mb-4">{t('metrics_comparison')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis domain={[1, 5]} />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(107, 114, 128, 0.2)" />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fill: document.documentElement.classList.contains('dark') ? '#f3f4f6' : '#111827' }}
+                  axisLine={{ stroke: 'rgba(107, 114, 128, 0.2)' }}
+                />
+                <YAxis 
+                  domain={[1, 5]} 
+                  tick={{ fill: document.documentElement.classList.contains('dark') ? '#f3f4f6' : '#111827' }}
+                  axisLine={{ stroke: 'rgba(107, 114, 128, 0.2)' }}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: document.documentElement.classList.contains('dark') ? '#1f2937' : '#ffffff',
+                    color: document.documentElement.classList.contains('dark') ? '#f3f4f6' : '#111827',
+                    border: document.documentElement.classList.contains('dark') ? '1px solid #4b5563' : '1px solid #e5e7eb'
+                  }} 
+                />
                 <Legend />
                 <Line 
                   type="monotone" 
@@ -259,7 +287,7 @@ export function HistoryPage() {
                   <h3 className="text-lg mb-1">{t('sleep_quality')}</h3>
                   <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                     <div 
-                      className="h-full bg-blue-500 rounded-full" 
+                      className="h-full bg-blue-500 dark:bg-blue-400 rounded-full transition-colors" 
                       style={{ width: `${(selectedEntry.sleep / 5) * 100}%` }}
                     ></div>
                   </div>
@@ -271,7 +299,7 @@ export function HistoryPage() {
                   <h3 className="text-lg mb-1">{t('stress_level')}</h3>
                   <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                     <div 
-                      className="h-full bg-red-500 rounded-full" 
+                      className="h-full bg-red-500 dark:bg-red-400 rounded-full transition-colors" 
                       style={{ width: `${(selectedEntry.stress / 5) * 100}%` }}
                     ></div>
                   </div>
@@ -283,7 +311,7 @@ export function HistoryPage() {
                   <h3 className="text-lg mb-1">{t('energy_level')}</h3>
                   <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
                     <div 
-                      className="h-full bg-yellow-500 rounded-full" 
+                      className="h-full bg-yellow-500 dark:bg-yellow-400 rounded-full transition-colors" 
                       style={{ width: `${(selectedEntry.energy / 5) * 100}%` }}
                     ></div>
                   </div>
@@ -312,7 +340,7 @@ export function HistoryPage() {
                       <li key={i}>
                         {meal.name} ({t(meal.category)})
                         {meal.rating && (
-                          <span className="ml-2" title={`${meal.rating} ${t('stars')}`}>
+                          <span className="ml-2 text-yellow-600 dark:text-yellow-500 transition-colors" title={`${meal.rating} ${t('stars')}`}>
                             {Array(meal.rating).fill('★').join('')}
                           </span>
                         )}

@@ -1,11 +1,38 @@
+/* Base styles */
 body {
   margin: 0;
   padding: 0;
 }
 
+/* Direct theme styles */
+.light-theme {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.dark-theme {
+  background-color: #111827 !important;
+  color: #f3f4f6 !important;
+}
+
+/* Root container styles */
 #root {
   max-width: 100%;
   margin: 0 auto;
+}
+
+/* Debug styles - add these to see theme changes more clearly */
+.debug-light {
+  border: 5px solid yellow;
+}
+
+.debug-dark {
+  border: 5px solid blue;
+}
+
+/* Transition for smooth theme changes */
+.app-container {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Remove the default padding - we'll handle it in components */
