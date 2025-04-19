@@ -6,12 +6,14 @@ import { useLanguage } from '../hooks/useLanguage';
 import { Language } from '../lib/utils';
 
 export function SettingsPage() {
-  const { getUserSettings, updateUserSettings } = useDatabase();
+  const { getUserSettings, updateUserSettings, exportAllData, deleteAllData } = useDatabase();
   const { language, setLanguage, t } = useLanguage();
   
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   
   useEffect(() => {
     const fetchSettings = async () => {
@@ -19,7 +21,7 @@ export function SettingsPage() {
         const userSettings = await getUserSettings();
         setSettings(userSettings || {
           offlineOnly: true,
-          theme: 'system',
+          theme: 'dark', // always dark theme
           metrics: {
             showSleep: true,
             showStress: true,
@@ -49,8 +51,10 @@ export function SettingsPage() {
         theme: 'dark'
       };
       await updateUserSettings(settingsWithDarkTheme);
+      showNotification('Settings saved successfully', 'success');
     } catch (error) {
       console.error('Error saving settings:', error);
+      showNotification('Failed to save settings', 'error');
     } finally {
       setSaving(false);
     }
@@ -70,6 +74,81 @@ export function SettingsPage() {
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
+  };
+  
+  const handleExportData = async () => {
+    try {
+      // Show loading notification
+      showNotification('Preparing data export...', 'success');
+      
+      // Get all data from the database
+      console.log('Calling exportAllData...');
+      const data = await exportAllData();
+      console.log('Data received:', data);
+      
+      // Convert data to a JSON string with pretty formatting
+      const dataStr = JSON.stringify(data, null, 2);
+      
+      // Create a blob from the JSON string
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      
+      // Create a download URL for the blob
+      const url = URL.createObjectURL(blob);
+      
+      // Create a temporary download link
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.download = `mood-tracker-export-${new Date().toISOString().slice(0, 10)}.json`;
+      
+      // Add link to the document, click it, then remove it
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showNotification('Data exported successfully', 'success');
+      }, 100);
+      
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      showNotification('Failed to export data: ' + (error instanceof Error ? error.message : 'Unknown error'), 'error');
+    }
+  };
+  
+  const handleDeleteData = async () => {
+    try {
+      console.log('Attempting to delete all data...');
+      showNotification('Deleting data...', 'success');
+      
+      // Call database method to delete data
+      const result = await deleteAllData();
+      console.log('Delete operation result:', result);
+      
+      // Close the confirmation dialog
+      setDeleteConfirmOpen(false);
+      
+      // Show success notification
+      showNotification(t('data_deleted'), 'success');
+      
+    } catch (error) {
+      console.error('Error deleting data:', error);
+      showNotification('Failed to delete data: ' + (error instanceof Error ? error.message : 'Unknown error'), 'error');
+    }
+  };
+  
+  const showNotification = (message: string, type: 'success' | 'error') => {
+    // Clear any existing notification first
+    setNotification(null);
+    
+    // Set the new notification after a brief delay to ensure UI updates
+    setTimeout(() => {
+      setNotification({ message, type });
+      // Clear notification after display time
+      setTimeout(() => setNotification(null), 3000);
+    }, 100);
   };
   
   if (loading) {
@@ -189,16 +268,50 @@ export function SettingsPage() {
         <div>
           <h2 className="text-lg font-medium mb-3">{t('data_management')}</h2>
           <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="text-sm">
+            <Button 
+              variant="outline" 
+              className="text-sm"
+              onClick={handleExportData}
+            >
               {t('export_all_data')}
             </Button>
-            <Button variant="outline" className="text-sm text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300">
+            <Button 
+              variant="outline" 
+              className="text-sm text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+              onClick={() => setDeleteConfirmOpen(true)}
+            >
               {t('delete_all_data')}
             </Button>
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
             {t('data_management_notice')}
           </p>
+          
+          {/* Delete confirmation dialog */}
+          {deleteConfirmOpen && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md w-full">
+                <h3 className="text-xl font-bold mb-4 text-red-600 dark:text-red-400">{t('confirm_delete')}</h3>
+                <p className="mb-6">{t('delete_confirm_text')}</p>
+                <div className="flex gap-3">
+                  <Button 
+                    variant="outline" 
+                    className="flex-1"
+                    onClick={() => setDeleteConfirmOpen(false)}
+                  >
+                    {t('cancel')}
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    className="flex-1"
+                    onClick={handleDeleteData}
+                  >
+                    {t('delete')}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       
@@ -210,6 +323,17 @@ export function SettingsPage() {
       >
         {saving ? t('saving') : t('save_settings')}
       </Button>
+      
+      {/* Notification Toast */}
+      {notification && (
+        <div 
+          className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-lg text-white ${
+            notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+          } animate-fade-in-out z-50`}
+        >
+          {notification.message}
+        </div>
+      )}
     </div>
   );
 }

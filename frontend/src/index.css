@@ -21,3 +21,15 @@ body[data-theme="dark"] {
   background-color: #111827;
   color: #f3f4f6;
 }
+
+/* Animation for notifications */
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 20px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  90% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -20px); }
+}
+
+.animate-fade-in-out {
+  animation: fadeInOut 3s ease-in-out forwards;
+}

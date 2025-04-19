@@ -35,6 +35,15 @@ export function useDatabase() {
     }
   }, []);
 
+  const exportAllData = useCallback(async () => {
+    const data = await db.exportAllData();
+    return data;
+  }, []);
+  
+  const deleteAllData = useCallback(async () => {
+    await db.deleteAllData();
+  }, []);
+
   return {
     addMoodEntry,
     updateMoodEntry,
@@ -42,6 +51,8 @@ export function useDatabase() {
     getMoodEntries,
     getMoodEntriesByDateRange,
     getUserSettings,
-    updateUserSettings
+    updateUserSettings,
+    exportAllData,
+    deleteAllData
   };
 }

@@ -75,6 +75,43 @@ export class WellnessDatabase extends Dexie {
     
     return entries.flatMap(entry => entry.meals || []);
   }
+  
+  async exportAllData() {
+    try {
+      // Get all data from all tables
+      const moodEntries = await this.moodEntries.toArray();
+      const user = await this.getCurrentUser();
+      
+      console.log('Exporting data:', { entriesCount: moodEntries.length, hasUser: !!user });
+      
+      return {
+        moodEntries,
+        userSettings: user?.settings || null,
+        exportDate: new Date().toISOString(),
+        exportVersion: '1.0'
+      };
+    } catch (error) {
+      console.error('Error in exportAllData:', error);
+      throw error;
+    }
+  }
+  
+  async deleteAllData() {
+    try {
+      // Begin transaction to ensure atomicity
+      await this.transaction('rw', this.moodEntries, async () => {
+        // Clear all mood entries
+        const count = await this.moodEntries.count();
+        await this.moodEntries.clear();
+        console.log(`Deleted ${count} mood entries`);
+      });
+      
+      return true;
+    } catch (error) {
+      console.error('Error in deleteAllData:', error);
+      throw error;
+    }
+  }
 }
 
 export const db = new WellnessDatabase();

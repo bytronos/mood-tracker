@@ -395,6 +395,22 @@ export const translations: Translations = {
     en: "Error loading settings",
     de: "Fehler beim Laden der Einstellungen"
   },
+  "confirm_delete": {
+    en: "Confirm Deletion",
+    de: "Löschvorgang bestätigen"
+  },
+  "delete_confirm_text": {
+    en: "Are you sure you want to delete all your mood entries? This action cannot be undone.",
+    de: "Bist du sicher, dass du alle deine Stimmungseinträge löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden."
+  },
+  "delete": {
+    en: "Delete",
+    de: "Löschen"
+  },
+  "data_deleted": {
+    en: "All data has been deleted",
+    de: "Alle Daten wurden gelöscht"
+  },
   
   // Export related
   "date": {
