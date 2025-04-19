@@ -26,6 +26,8 @@ export function SleepTracker({ value, onChange }: SleepTrackerProps) {
         onChange={handleChange}
         minLabel={t('poor')}
         maxLabel={t('excellent')}
+        fillColor="#3b82f6"        /* blue-500 */
+        emptyColor="#bfdbfe"      /* blue-200 */
         className="w-full"
       />
       <div className="grid grid-cols-5 mt-2 text-[9px] sm:text-xs text-gray-500 dark:text-gray-400 px-1 text-center">

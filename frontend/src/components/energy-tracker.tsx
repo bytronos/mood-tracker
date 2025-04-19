@@ -26,6 +26,8 @@ export function EnergyTracker({ value, onChange }: EnergyTrackerProps) {
         onChange={handleChange}
         minLabel={t('low')}
         maxLabel={t('high')}
+        fillColor="#f59e0b"    /* amber-500 */
+        emptyColor="#fde68a"  /* amber-200 */
         className="w-full"
       />
       <div className="grid grid-cols-5 mt-2 text-[9px] sm:text-xs text-gray-500 dark:text-gray-400 px-1 text-center">
