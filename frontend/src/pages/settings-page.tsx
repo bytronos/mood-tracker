@@ -52,6 +52,11 @@ export function SettingsPage() {
       };
       await updateUserSettings(settingsWithDarkTheme);
       showNotification('Settings saved successfully', 'success');
+      
+      // Force reload to apply settings
+      if (window.location.pathname === '/') {
+        window.location.reload();
+      }
     } catch (error) {
       console.error('Error saving settings:', error);
       showNotification('Failed to save settings', 'error');

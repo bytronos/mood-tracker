@@ -18,7 +18,14 @@ import {
 } from 'recharts';
 
 export function HistoryPage() {
-  const { getMoodEntriesByDateRange } = useDatabase();
+  const { getMoodEntriesByDateRange, getUserSettings } = useDatabase();
+  const [userMetrics, setUserMetrics] = useState({
+    showSleep: true,
+    showStress: true,
+    showEnergy: true,
+    showMedications: true,
+    showMeals: true
+  });
   const { t } = useLanguage();
   const [entries, setEntries] = useState<MoodEntry[]>([]);
   const [selectedEntry, setSelectedEntry] = useState<MoodEntry | null>(null);
@@ -28,6 +35,23 @@ export function HistoryPage() {
     endDate: new Date()
   });
   
+  // Load user settings
+  useEffect(() => {
+    const loadUserSettings = async () => {
+      try {
+        const settings = await getUserSettings();
+        if (settings && settings.metrics) {
+          setUserMetrics(settings.metrics);
+        }
+      } catch (error) {
+        console.error("Error loading user settings:", error);
+      }
+    };
+    
+    loadUserSettings();
+  }, [getUserSettings]);
+
+  // Fetch entries based on date range
   useEffect(() => {
     const fetchEntries = async () => {
       setLoading(true);
@@ -192,24 +216,30 @@ export function HistoryPage() {
                   stroke="#4f46e5" 
                   name={t('mood')}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="sleep" 
-                  stroke="#06b6d4" 
-                  name={t('sleep')}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="stress" 
-                  stroke="#ef4444" 
-                  name={t('stress')}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="energy" 
-                  stroke="#eab308" 
-                  name={t('energy')}
-                />
+                {userMetrics.showSleep && (
+                  <Line 
+                    type="monotone" 
+                    dataKey="sleep" 
+                    stroke="#06b6d4" 
+                    name={t('sleep')}
+                  />
+                )}
+                {userMetrics.showStress && (
+                  <Line 
+                    type="monotone" 
+                    dataKey="stress" 
+                    stroke="#ef4444" 
+                    name={t('stress')}
+                  />
+                )}
+                {userMetrics.showEnergy && (
+                  <Line 
+                    type="monotone" 
+                    dataKey="energy" 
+                    stroke="#eab308" 
+                    name={t('energy')}
+                  />
+                )}
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -282,7 +312,7 @@ export function HistoryPage() {
                 </div>
               </div>
               
-              {selectedEntry.sleep && (
+              {selectedEntry.sleep && userMetrics.showSleep && (
                 <div>
                   <h3 className="text-lg mb-1">{t('sleep_quality')}</h3>
                   <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
@@ -294,7 +324,7 @@ export function HistoryPage() {
                 </div>
               )}
               
-              {selectedEntry.stress && (
+              {selectedEntry.stress && userMetrics.showStress && (
                 <div>
                   <h3 className="text-lg mb-1">{t('stress_level')}</h3>
                   <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
@@ -306,7 +336,7 @@ export function HistoryPage() {
                 </div>
               )}
               
-              {selectedEntry.energy && (
+              {selectedEntry.energy && userMetrics.showEnergy && (
                 <div>
                   <h3 className="text-lg mb-1">{t('energy_level')}</h3>
                   <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full">
@@ -318,7 +348,7 @@ export function HistoryPage() {
                 </div>
               )}
               
-              {selectedEntry.medications && selectedEntry.medications.length > 0 && (
+              {selectedEntry.medications && selectedEntry.medications.length > 0 && userMetrics.showMedications && (
                 <div>
                   <h3 className="text-lg mb-1">{t('medications')}</h3>
                   <ul className="pl-5 list-disc">
@@ -332,7 +362,7 @@ export function HistoryPage() {
                 </div>
               )}
               
-              {selectedEntry.meals && selectedEntry.meals.length > 0 && (
+              {selectedEntry.meals && selectedEntry.meals.length > 0 && userMetrics.showMeals && (
                 <div>
                   <h3 className="text-lg mb-1">{t('meals')}</h3>
                   <ul className="pl-5 list-disc">

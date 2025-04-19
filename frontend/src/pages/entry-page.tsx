@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { MoodPicker } from '../components/mood-picker';
 import { SleepTracker } from '../components/sleep-tracker';
@@ -13,8 +13,15 @@ import { useLanguage } from '../hooks/useLanguage';
 import { MoodEntry, MoodLevel, SleepQuality, StressLevel, EnergyLevel, Medication, Meal, CustomMetric } from '../types';
 
 export function EntryPage() {
-  const { addMoodEntry } = useDatabase();
+  const { addMoodEntry, getUserSettings } = useDatabase();
   const { t } = useLanguage();
+  const [userMetrics, setUserMetrics] = useState({
+    showSleep: true,
+    showStress: true,
+    showEnergy: true,
+    showMedications: true,
+    showMeals: true
+  });
   
   const [mood, setMood] = useState<MoodLevel>(3);
   const [sleep, setSleep] = useState<SleepQuality>(3);
@@ -25,6 +32,22 @@ export function EntryPage() {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [customMetrics, setCustomMetrics] = useState<CustomMetric[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // Load user settings on component mount
+  useEffect(() => {
+    const loadUserSettings = async () => {
+      try {
+        const settings = await getUserSettings();
+        if (settings && settings.metrics) {
+          setUserMetrics(settings.metrics);
+        }
+      } catch (error) {
+        console.error("Error loading user settings:", error);
+      }
+    };
+    
+    loadUserSettings();
+  }, [getUserSettings]);
   
   const handleSubmit = async () => {
     setIsSaving(true);
@@ -72,21 +95,31 @@ export function EntryPage() {
       <div className="space-y-4">
         <MoodPicker value={mood} onChange={setMood} />
         
-        <SleepTracker value={sleep} onChange={setSleep} />
+        {userMetrics.showSleep && (
+          <SleepTracker value={sleep} onChange={setSleep} />
+        )}
         
-        <StressTracker value={stress} onChange={setStress} />
+        {userMetrics.showStress && (
+          <StressTracker value={stress} onChange={setStress} />
+        )}
         
-        <EnergyTracker value={energy} onChange={setEnergy} />
+        {userMetrics.showEnergy && (
+          <EnergyTracker value={energy} onChange={setEnergy} />
+        )}
         
-        <MedicationTracker 
-          medications={medications} 
-          onChange={setMedications} 
-        />
+        {userMetrics.showMedications && (
+          <MedicationTracker 
+            medications={medications} 
+            onChange={setMedications} 
+          />
+        )}
         
-        <MealTracker 
-          meals={meals} 
-          onChange={setMeals} 
-        />
+        {userMetrics.showMeals && (
+          <MealTracker 
+            meals={meals} 
+            onChange={setMeals} 
+          />
+        )}
         
         <CustomMetricTracker
           metrics={customMetrics}
