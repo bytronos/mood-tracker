@@ -61,7 +61,6 @@ export default defineConfig({
         manualChunks: {
           react: ['react', 'react-dom', 'react-router-dom'],
           charts: ['recharts'],
-          ui: ['tailwindcss', 'class-variance-authority', 'clsx', 'tailwind-merge'],
           db: ['dexie']
         }
       }
