@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDatabase } from '../hooks/useDatabase';
 import { useLanguage } from '../hooks/useLanguage';
 import { MoodEntry, DateRange } from '../types';
@@ -7,8 +7,6 @@ import { Button } from '../components/ui/button';
 import {
   LineChart,
   Line,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,

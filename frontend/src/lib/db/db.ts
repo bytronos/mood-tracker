@@ -1,5 +1,5 @@
 import Dexie, { Table } from 'dexie';
-import { MoodEntry, Medication, Meal, CustomMetric, User } from '../../types';
+import { MoodEntry, Medication, Meal, CustomMetric, User, UserSettings } from '../../types';
 
 export class WellnessDatabase extends Dexie {
   moodEntries!: Table<MoodEntry, number>;
@@ -23,7 +23,7 @@ export class WellnessDatabase extends Dexie {
   async getCurrentUser() {
     const user = await this.users.toArray();
     if (user.length === 0) {
-      const defaultSettings = {
+      const defaultSettings: UserSettings = {
         offlineOnly: true,
         theme: 'system',
         metrics: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CustomMetric } from '../types';
 import { Button } from './ui/button';
 import { useLanguage } from '../hooks/useLanguage';

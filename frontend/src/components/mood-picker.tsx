@@ -1,4 +1,3 @@
-import React from 'react';
 import { MoodLevel } from '../types';
 import { useLanguage } from '../hooks/useLanguage';
 
